@@ -56,9 +56,9 @@ class ClientPurchaseOrderModel extends BaseModel {
    */
   async findAcknowledged() {
     return this.db('client_purchase_orders')
-      .where({ acknowledged: true })
+      .where({ acknowledgement_sent: true })
       .whereNull('deleted_at')
-      .orderBy('acknowledged_at', 'desc');
+      .orderBy('acknowledgement_date', 'desc');
   }
 
   /**
@@ -66,7 +66,7 @@ class ClientPurchaseOrderModel extends BaseModel {
    */
   async findPendingAcknowledgment() {
     return this.db('client_purchase_orders')
-      .where({ acknowledged: false })
+      .where({ acknowledgement_sent: false })
       .whereNull('deleted_at')
       .orderBy('po_date', 'desc');
   }
@@ -79,9 +79,9 @@ class ClientPurchaseOrderModel extends BaseModel {
       .where({ id })
       .whereNull('deleted_at')
       .update({
-        acknowledged: true,
-        acknowledged_at: this.db.fn.now(),
-        acknowledged_by: acknowledgedBy,
+        acknowledgement_sent: true,
+        acknowledgement_date: this.db.fn.now(),
+        status: 'acknowledged',
         updated_at: this.db.fn.now()
       })
       .returning('*');

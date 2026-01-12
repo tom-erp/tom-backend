@@ -18,6 +18,10 @@ router.use('/users', userRoutes);
 const organizationRoutes = require('../modules/organization/organization.routes');
 router.use('/organizations', organizationRoutes);
 
+// Client Purchase Order routes
+const clientPoRoutes = require('../modules/client-purchase-order/client-po.routes');
+router.use('/client-purchase-orders', clientPoRoutes);
+
 // TODO: Add other module routes here
 
 module.exports = router;
