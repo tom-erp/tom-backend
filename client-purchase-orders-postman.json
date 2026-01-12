@@ -1,0 +1,318 @@
+{
+  "name": "Client Purchase Orders",
+  "item": [
+    {
+      "name": "Get All Client POs",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders"
+          ]
+        },
+        "description": "Get all client purchase orders"
+      }
+    },
+    {
+      "name": "Get Client PO by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders",
+            "1"
+          ]
+        },
+        "description": "Get client purchase order by ID"
+      }
+    },
+    {
+      "name": "Create Client PO",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "if (pm.response.code === 201) {",
+              "    const jsonData = pm.response.json();",
+              "    if (jsonData.data && jsonData.data.id) {",
+              "        pm.collectionVariables.set('client_po_id', jsonData.data.id);",
+              "    }",
+              "}"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"client_po_number\": \"PO-2024-001\",\n  \"internal_po_number\": \"INT-PO-001\",\n  \"client_id\": 1,\n  \"project_id\": 1,\n  \"po_date\": \"2024-01-15\",\n  \"total_value\": 50000.00,\n  \"currency\": \"SGD\",\n  \"project_site\": \"Marina Bay Project\",\n  \"project_scope\": \"MEP Installation for high-rise building\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders"
+          ]
+        },
+        "description": "Create new client purchase order"
+      }
+    },
+    {
+      "name": "Create Client PO with Items",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"client_po_number\": \"PO-2024-002\",\n  \"internal_po_number\": \"INT-PO-002\",\n  \"client_id\": 1,\n  \"project_id\": 1,\n  \"po_date\": \"2024-01-16\",\n  \"total_value\": 75000.00,\n  \"tax_percentage\": 7,\n  \"tax_amount\": 5250.00,\n  \"currency\": \"SGD\",\n  \"project_site\": \"Orchard Road Development\",\n  \"project_scope\": \"Electrical and plumbing prefabrication\",\n  \"items\": [\n    {\n      \"item_code\": \"PIPE-001\",\n      \"item_description\": \"Steel Pipe 6 inch\",\n      \"quantity\": 100,\n      \"unit_of_measure\": \"meters\",\n      \"unit_price\": 25.50\n    },\n    {\n      \"item_code\": \"ELEC-001\",\n      \"item_description\": \"Electrical Cable 16mm\",\n      \"quantity\": 500,\n      \"unit_of_measure\": \"meters\",\n      \"unit_price\": 12.80\n    }\n  ]\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders"
+          ]
+        },
+        "description": "Create client purchase order with items"
+      }
+    },
+    {
+      "name": "Update Client PO",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"total_value\": 55000.00,\n  \"status\": \"under_review\",\n  \"notes\": \"Updated after client review\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders",
+            "1"
+          ]
+        },
+        "description": "Update client purchase order"
+      }
+    },
+    {
+      "name": "Get Client POs by Client",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders/client/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders",
+            "client",
+            "1"
+          ]
+        },
+        "description": "Get all purchase orders for a specific client"
+      }
+    },
+    {
+      "name": "Get Client POs by Project",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders/project/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders",
+            "project",
+            "1"
+          ]
+        },
+        "description": "Get all purchase orders for a specific project"
+      }
+    },
+    {
+      "name": "Get Client PO by PO Number",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders/po-number/PO-2024-001",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders",
+            "po-number",
+            "PO-2024-001"
+          ]
+        },
+        "description": "Get purchase order by PO number"
+      }
+    },
+    {
+      "name": "Get Client POs by Status",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders/status/received",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders",
+            "status",
+            "received"
+          ]
+        },
+        "description": "Get purchase orders by status (received, under_review, validated, acknowledged, approved, rejected, converted)"
+      }
+    },
+    {
+      "name": "Get Client PO with Items",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders/1/with-items",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders",
+            "1",
+            "with-items"
+          ]
+        },
+        "description": "Get purchase order with all its items"
+      }
+    },
+    {
+      "name": "Acknowledge Client PO",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"acknowledgedBy\": 1\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders/1/acknowledge",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders",
+            "1",
+            "acknowledge"
+          ]
+        },
+        "description": "Acknowledge a client purchase order"
+      }
+    },
+    {
+      "name": "Update Client PO Status",
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"status\": \"approved\",\n  \"updatedBy\": 1\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders/1/status",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders",
+            "1",
+            "status"
+          ]
+        },
+        "description": "Update purchase order status"
+      }
+    },
+    {
+      "name": "Delete Client PO",
+      "request": {
+        "method": "DELETE",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}{{api_prefix}}/client-purchase-orders/1",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "{{api_prefix}}",
+            "client-purchase-orders",
+            "1"
+          ]
+        },
+        "description": "Delete client purchase order (soft delete)"
+      }
+    }
+  ],
+  "description": "Client Purchase Order management endpoints"
+}
