@@ -1,36 +1,83 @@
+/**
+ * Error Handler Middleware
+ * Handles all application errors
+ */
+
 const AppError = require('../utils/errors/AppError');
 const logger = require('../utils/lib/logger');
+const errorCodes = require('../utils/errors/errorCodes');
 
-const errorHandler = (err, req, res, next) => {
+const errorHandler = (err, req, res, _next) => {
   let error = { ...err };
   error.message = err.message;
 
   // Log error
   logger.error(err);
 
-  // Mongoose bad ObjectId
-  if (err.name === 'CastError') {
-    const message = 'Resource not found';
-    error = new AppError(message, 404);
+  // AppError (custom error)
+  if (err instanceof AppError) {
+    return res.status(err.statusCode).json({
+      success: false,
+      error: {
+        message: err.message,
+        code: err.code,
+        ...(err.errors && { errors: err.errors })
+      }
+    });
   }
 
-  // Mongoose duplicate key
-  if (err.code === 11000) {
-    const message = 'Duplicate field value entered';
-    error = new AppError(message, 400);
+  // JWT errors
+  if (err.name === 'JsonWebTokenError') {
+    error = new AppError('Invalid token', 401, errorCodes.INVALID_TOKEN);
+    return res.status(error.statusCode).json({
+      success: false,
+      error: {
+        message: error.message,
+        code: error.code
+      }
+    });
   }
 
-  // Mongoose validation error
-  if (err.name === 'ValidationError') {
-    const message = Object.values(err.errors).map(val => val.message);
-    error = new AppError(message, 400);
+  if (err.name === 'TokenExpiredError') {
+    error = new AppError('Token expired', 401, errorCodes.TOKEN_EXPIRED);
+    return res.status(error.statusCode).json({
+      success: false,
+      error: {
+        message: error.message,
+        code: error.code
+      }
+    });
   }
 
+  // PostgreSQL errors
+  if (err.code === '23505') { // Unique violation
+    error = new AppError('Duplicate entry', 409, errorCodes.DUPLICATE_ENTRY);
+    return res.status(error.statusCode).json({
+      success: false,
+      error: {
+        message: error.message,
+        code: error.code
+      }
+    });
+  }
+
+  if (err.code === '23503') { // Foreign key violation
+    error = new AppError('Referenced resource not found', 400, errorCodes.VALIDATION_ERROR);
+    return res.status(error.statusCode).json({
+      success: false,
+      error: {
+        message: error.message,
+        code: error.code
+      }
+    });
+  }
+
+  // Default error
   res.status(error.statusCode || 500).json({
     success: false,
     error: {
-      code: error.code || 'INTERNAL_SERVER_ERROR',
-      message: error.message || 'Server Error',
+      message: error.message || 'Internal Server Error',
+      code: error.code || errorCodes.INTERNAL_SERVER_ERROR,
       ...(process.env.NODE_ENV === 'development' && { stack: err.stack })
     }
   });

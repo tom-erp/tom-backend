@@ -29,6 +29,18 @@ app.use(limiter);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Normalize request URLs (remove double slashes)
+app.use((req, res, next) => {
+  // Normalize the URL path to remove double slashes
+  if (req.url.includes('//')) {
+    req.url = req.url.replace(/\/+/g, '/');
+  }
+  if (req.originalUrl.includes('//')) {
+    req.originalUrl = req.originalUrl.replace(/\/+/g, '/');
+  }
+  next();
+});
+
 // Request logging
 app.use((req, res, next) => {
   logger.info(`${req.method} ${req.path}`);
@@ -42,7 +54,13 @@ app.get('/health', (req, res) => {
 
 // API routes
 const routes = require('./routes');
-app.use(`${config.API_PREFIX}/${config.API_VERSION}`, routes);
+// Normalize path to prevent double slashes
+const apiPath = `${config.API_PREFIX}/${config.API_VERSION}`.replace(/\/+/g, '/');
+app.use(apiPath, routes);
+
+// 404 handler (must be before error handler)
+const notFoundHandler = require('./middlewares/not-found.middleware');
+app.use(notFoundHandler);
 
 // Error handler (must be last)
 app.use(errorHandler);
