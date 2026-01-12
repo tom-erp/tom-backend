@@ -15,6 +15,7 @@ const CREATE_TABLE = `CREATE TABLE client_purchase_orders (
     quotation_id INTEGER REFERENCES sales_quotations(id) ON DELETE SET NULL,
     enquiry_id INTEGER REFERENCES sales_enquiries(id) ON DELETE SET NULL,
     client_id INTEGER NOT NULL REFERENCES organizations(id) ON DELETE RESTRICT,
+    project_id INTEGER REFERENCES projects(id) ON DELETE SET NULL,
     po_date DATE NOT NULL,
     received_date DATE,
     project_site VARCHAR(255),
@@ -45,6 +46,7 @@ CREATE INDEX idx_client_pos_client_po_number ON client_purchase_orders(client_po
 CREATE INDEX idx_client_pos_internal_po_number ON client_purchase_orders(internal_po_number);
 CREATE INDEX idx_client_pos_quotation_id ON client_purchase_orders(quotation_id);
 CREATE INDEX idx_client_pos_client_id ON client_purchase_orders(client_id);
+CREATE INDEX idx_client_pos_project_id ON client_purchase_orders(project_id);
 CREATE INDEX idx_client_pos_status ON client_purchase_orders(status);
 `;
 
