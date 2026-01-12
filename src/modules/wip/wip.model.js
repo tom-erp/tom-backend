@@ -121,9 +121,9 @@ class WIPModel extends BaseModel {
   }
 
   /**
-   * Find WIP with material usage
+   * Find WIP by ID with material usage details
    */
-  async findWithMaterialUsage(id) {
+  async findByIdWithMaterialUsage(id) {
     const wip = await this.findById(id);
     if (!wip) return null;
 

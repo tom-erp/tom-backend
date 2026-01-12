@@ -11,6 +11,8 @@
     "migrate:make": "knex migrate:make",
     "seed": "knex seed:run",
     "seed:make": "knex seed:make",
+    "db:empty": "node scripts/empty-db.js",
+    "schemas:sync": "node scripts/sync-schemas.js",
     "test": "jest",
     "test:watch": "jest --watch",
     "lint": "eslint src/",
